@@ -17,7 +17,6 @@ last_name = last_name_input.strip().lower().capitalize()
 print(f"Hello {last_name}, {first_name}")
 
 # POINTS EARNED FOR UNIT 1
-
 # Assigning actaul points received for Unit_1_discussion_points variable
 Unit1_discussion_points = 50
 
