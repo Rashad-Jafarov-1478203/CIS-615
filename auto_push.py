@@ -1,0 +1,26 @@
+def validate_student_id(student_id: str) -> bool:
+    return student_id.isdigit() and len(student_id) == 7
+print(validate_student_id("1478203"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
