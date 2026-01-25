@@ -56,4 +56,4 @@ print(
     "Got maximum points for Unit 1 core assessment?",
     Unit1_core_assesment_points == task_maximum_points
 )
-
+print("hello")
