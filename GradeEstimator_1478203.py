@@ -1,3 +1,4 @@
+# Verified Sync 2026.
 # Asks the user's first name and assigns to the variable
 first_name_input = input("Enter your first name: ")
 
