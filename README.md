@@ -13,6 +13,6 @@ This repository contains my assignments and projects for the CIS615 course.
 Contains professional documentation and my current resume:
 * **resume.pdf**: My professional resume uploaded for the data analyst position.
 
-### 🖼️ [Unit 1/](./Unit%201/)
+### 🖼️ [Unit 2/]
 Contains submission requirements for the first unit:
-* **run_screenshot.png**: A screenshot showing the successful execution of the Grade Estimator script.
+* **Running_Code_Screenshot.jpg**: A screenshot showing the successful execution of the Grade Estimator script.
