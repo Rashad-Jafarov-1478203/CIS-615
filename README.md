@@ -3,7 +3,7 @@
 This repository contains my assignments and projects for the CIS615 course. 
 
 ## 🐍 Main Project
-* **[GradeEstimator_1478203.py](./GradeEstimator_1478203.py)**: This is the primary Python script used throughout the semester for grade estimation.
+* **[GradeEstimator_1478203.py](GradeEstimator_1478203.py)**: This is the primary Python script used throughout the semester for grade estimation.
 
 ---
 

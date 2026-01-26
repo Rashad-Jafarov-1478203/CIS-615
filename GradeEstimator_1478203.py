@@ -1,4 +1,5 @@
-# Verified Sync 2026.
+print("hello dear ne")
+
 # Asks the user's first name and assigns to the variable
 first_name_input = input("Enter your first name: ")
 
@@ -58,3 +59,6 @@ print(
     Unit1_core_assesment_points == task_maximum_points
 )
 print("hello")
+# Updated Jan 25
+# Force Push at 9:15PM
+#Final sync
