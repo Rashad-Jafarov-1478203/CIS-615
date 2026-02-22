@@ -1,0 +1,22 @@
+{
+  "assignment_types": [
+    {
+      "name": "Discussions",
+      "display_name": "Group Discussions",
+      "tasks_per_semester": 8,
+      "max_points_per_submission": 50
+    },
+    {
+      "name": "Assignments",
+      "display_name": "Weekly Coding Assignments",
+      "tasks_per_semester": 4,
+      "max_points_per_submission": 50
+    },
+    {
+      "name": "Course Project",
+      "display_name": "Semester Course Project",
+      "tasks_per_semester": 8,
+      "max_points_per_submission": 50
+    }
+  ]
+}

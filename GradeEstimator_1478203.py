@@ -1,53 +1,95 @@
-#---------WEEK 5----------
+# #---------WEEK 6----------
+# Importing "requests" for API call
+import requests
 
-import json # Importing the json library helps us to read and convert tasks.json file into Python data structures
+# Importing "datetime" to work with Date/Time
+from datetime import datetime
 
-# 1. Create Task_type class (as requested by the task) and add constructor wuth the following values
-class Task_type:
-    # Constructor initializes and sets up properties each task type will store
-    def __init__(self, name, display_name, tasks_per_semester, maximum_points_per_task):
-        self.name = name # Set the internal name of the assignment
-        self.display_name = display_name # Set how the assignment should be displayed
-        self.tasks_per_semester = tasks_per_semester # Store how many of these tasks exist
-        self.maximum_points_per_task = maximum_points_per_task # Store the max points per task
+def main():
+    # URL given by announcement
+    url = "http://worldclockapi.com/api/json/est/now"
 
-# 2. Parse the tasks.json file
-#with open('tasks.json', 'r') as file:
-    #data = json.load(file)
-try:
-    with open('tasks.json', 'r') as file: # Opens tasks.json in read mode
-        data = json.load(file) # Converts the JSON file into a Python dictionary
-        print("Successfully parsed the tasks.json file") # prints success message
-except FileNotFoundError: # if Python can’t find the file it prints an error message
-    print("Error: tasks.json file not found. Please ensure it is in the correct directory.")
-    data = {"assignment_types": []}
+    try:
+        # Step 1: API request
+        response = requests.get(url)
 
-# 3. Create an empty list for storing task types
-task_types_list = []
+        # Converting response to Pyhon dictionary for easy access
+        data = response.json()
 
-# 4. Iterate through the "assignment type" inside tasks.json and creates class instances
-#The loop goes through each assignment type one by one.
-for item in data['assignment_types']:
+        # Step 2: Pulling "currentDateTime" value from API
+        current_date_time = data["currentDateTime"]
 
-    # Create a new instance of Task_type using data from the JSON
-    new_task = Task_type(
-        item['name'],
-        item['display_name'],
-        item['tasks_per_semester'],
-        item['max_points_per_submission']
-    )
-    # Add the newly created object to our list
-    task_types_list.append(new_task)
+        # Displaying the date/time we received from API  (followed by ----- line)
+        print("Current Date/Time:", current_date_time)
+        print("-" * 40)
 
-# 5. Calculate total maximum points without hard-coding
-total_max_points = 0 # Starting at zero
-for task in task_types_list:
-    # Calculating and adding same formula for each task to the running total
-    total_max_points += (task.tasks_per_semester * task.maximum_points_per_task)
+        # Step 3: Converting string to datetime object
+        # Slicing first 16 characters to remove timezone from [2026-02-21T13:12-05:00]
+        now_date = datetime.strptime(current_date_time[:16], "%Y-%m-%dT%H:%M")
 
-# 6. Prints the final output
-# (8*50 + 4*50 + 8*50) = 1000
-print(f"Maximum grade you can get for this class is: {total_max_points}")
+        # Step 4: Converting datetime to day-of-year
+        now_day = now_date.timetuple().tm_yday
+
+        # Step 5: Setting 01/11/2026 as a start date and converting it to day-of-year
+        begin_course_day = datetime(2026, 1, 11).timetuple().tm_yday
+
+        # Step 6: Calculating the difference in days
+        days_passed = now_day - begin_course_day
+
+        # Step 7: Converting days to Units (7 days per unit)
+        completed_units = days_passed // 7
+
+        # Step 8: Printing final result
+        print(f"You have completed {completed_units} Units of 8.")
+
+    except Exception as e:
+        print("An error occurred:", e)
+
+if __name__ == "__main__":
+    main()
+
+# #---------WEEK 5----------
+# import json # Importing the json library helps us to read and convert tasks.json file into Python data structures
+#
+# # 1. Create Task_type class (as requested by the task) and add constructor wuth the following values
+# class Task_type:
+#     # Constructor initializes and sets up properties each task type will store
+#     def __init__(self, name, display_name, tasks_per_semester, maximum_points_per_task):
+#         self.name = name # Set the internal name of the assignment
+#         self.display_name = display_name # Set how the assignment should be displayed
+#         self.tasks_per_semester = tasks_per_semester # Store how many of these tasks exist
+#         self.maximum_points_per_task = maximum_points_per_task # Store the max points per task
+#
+# # 2. Parse the tasks.json file
+# with open('tasks.json', 'r') as file:
+#     data = json.load(file)
+#
+# # 3. Create an empty list for storing task types
+# task_types_list = []
+#
+# # 4. Iterate through the "assignment type" inside tasks.json and creates class instances
+# #The loop goes through each assignment type one by one.
+# for item in data['assignment_types']:
+#
+#     # Create a new instance of Task_type using data from the JSON
+#     new_task = Task_type(
+#         item['name'],
+#         item['display_name'],
+#         item['tasks_per_semester'],
+#         item['max_points_per_submission']
+#     )
+#     # Add the newly created object to our list
+#     task_types_list.append(new_task)
+#
+# # 5. Calculate total maximum points without hard-coding
+# total_max_points = 0 # Starting at zero
+# for task in task_types_list:
+#     # Calculating and adding same formula for each task to the running total
+#     total_max_points += (task.tasks_per_semester * task.maximum_points_per_task)
+#
+# # 6. Prints the final output
+# # (8*50 + 4*50 + 8*50) = 1000
+# print(f"Maximum grade you can get for this class is: {total_max_points}")
 
 # # -----------WEEK 4-----------------------
 # # --- CLASSES FOR EACH ASSIGNMENT TYPE ---
