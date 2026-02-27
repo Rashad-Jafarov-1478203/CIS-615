@@ -1,52 +1,142 @@
-# #---------WEEK 6----------
-# Importing "requests" for API call
-import requests
+# # #---------WEEK 7----------
+# Import pandas library to work with CSV data
+import pandas as pd
 
-# Importing "datetime" to work with Date/Time
-from datetime import datetime
+# Import json library to read from JSON file
+import json
 
-def main():
-    # URL given by announcement
-    url = "http://worldclockapi.com/api/json/est/now"
+# ---------------------------
+# STEP 1: Read Maximum Points from tasks.json
+# ---------------------------
 
-    try:
-        # Step 1: API request
-        response = requests.get(url)
+with open("tasks.json", "r") as file:
+    config_data = json.load(file)
 
-        # Converting response to Pyhon dictionary for easy access
-        data = response.json()
+# Create dictionary to store max points for each assignment type
+max_points_dict = {}
 
-        # Step 2: Pulling "currentDateTime" value from API
-        current_date_time = data["currentDateTime"]
+for assignment in config_data["assignment_types"]:
+    # Normalize name: lowercase + replace spaces with underscore
+    normalized_name = assignment["name"].lower().replace(" ", "_")
+    max_points_dict[normalized_name] = assignment["max_points_per_submission"]
 
-        # Displaying the date/time we received from API  (followed by ----- line)
-        print("Current Date/Time:", current_date_time)
-        print("-" * 40)
+print("Maximum points per submission by type:")
+print(max_points_dict)
 
-        # Step 3: Converting string to datetime object
-        # Slicing first 16 characters to remove timezone from [2026-02-21T13:12-05:00]
-        now_date = datetime.strptime(current_date_time[:16], "%Y-%m-%dT%H:%M")
+# ---------------------------
+# STEP 2: Read grades.csv Using Pandas
+# ---------------------------
 
-        # Step 4: Converting datetime to day-of-year
-        now_day = now_date.timetuple().tm_yday
+df = pd.read_csv("grades.csv")
 
-        # Step 5: Setting 01/11/2026 as a start date and converting it to day-of-year
-        begin_course_day = datetime(2026, 1, 11).timetuple().tm_yday
+print("\n----- ORIGINAL DATA -----")
+print(df)
 
-        # Step 6: Calculating the difference in days
-        days_passed = now_day - begin_course_day
+# ---------------------------
+# STEP 3: Display All Discussion Grades
+# ---------------------------
 
-        # Step 7: Converting days to Units (7 days per unit)
-        completed_units = days_passed // 7
+print("\n----- DISCUSSION GRADES ONLY -----")
 
-        # Step 8: Printing final result
-        print(f"You have completed {completed_units} Units of 8.")
+discussion_grades = df[df["type"].str.lower() == "discussion"]
 
-    except Exception as e:
-        print("An error occurred:", e)
+print(discussion_grades)
 
-if __name__ == "__main__":
-    main()
+# ---------------------------
+# STEP 4: Display Unit 1 Grades for All Types
+# ---------------------------
+
+print("\n----- UNIT 1 GRADES (ALL TYPES) -----")
+
+unit1_grades = df[["type", "week1"]]
+
+print(unit1_grades)
+
+# ---------------------------
+# STEP 5: Clean Data
+# ---------------------------
+
+print("\n----- CLEANING DATA -----")
+
+for index, row in df.iterrows():
+
+    # Normalize CSV type
+    assignment_type = row["type"].lower().replace(" ", "_")
+
+    # Get correct max grade
+    max_grade = max_points_dict.get(assignment_type)
+
+    # Only clean if type exists in JSON
+    if max_grade is not None:
+
+        for column in df.columns[1:]:
+
+            value = row[column]
+
+            if pd.notna(value):
+
+                # If grade less than 0 then set it as 0
+                if value < 0:
+                    df.at[index, column] = 0
+
+                # If grade greater than max then set to max grade
+                elif value > max_grade:
+                    df.at[index, column] = max_grade
+
+print("\n----- CLEANED DATA -----")
+print(df)
+
+
+
+# # #---------WEEK 6----------
+# # Importing "requests" for API call
+# import requests
+#
+# # Importing "datetime" to work with Date/Time
+# from datetime import datetime
+#
+# def main():
+#     # URL given by announcement
+#     url = "http://worldclockapi.com/api/json/est/now"
+#
+#     try:
+#         # Step 1: API request
+#         response = requests.get(url)
+#
+#         # Converting response to Pyhon dictionary for easy access
+#         data = response.json()
+#
+#         # Step 2: Pulling "currentDateTime" value from API
+#         current_date_time = data["currentDateTime"]
+#
+#         # Displaying the date/time we received from API  (followed by ----- line)
+#         print("Current Date/Time:", current_date_time)
+#         print("-" * 40)
+#
+#         # Step 3: Converting string to datetime object
+#         # Slicing first 16 characters to remove timezone from [2026-02-21T13:12-05:00]
+#         now_date = datetime.strptime(current_date_time[:16], "%Y-%m-%dT%H:%M")
+#
+#         # Step 4: Converting datetime to day-of-year
+#         now_day = now_date.timetuple().tm_yday
+#
+#         # Step 5: Setting 01/11/2026 as a start date and converting it to day-of-year
+#         begin_course_day = datetime(2026, 1, 11).timetuple().tm_yday
+#
+#         # Step 6: Calculating the difference in days
+#         days_passed = now_day - begin_course_day
+#
+#         # Step 7: Converting days to Units (7 days per unit)
+#         completed_units = days_passed // 7
+#
+#         # Step 8: Printing final result
+#         print(f"You have completed {completed_units} Units of 8.")
+#
+#     except Exception as e:
+#         print("An error occurred:", e)
+#
+# if __name__ == "__main__":
+#     main()
 
 # #---------WEEK 5----------
 # import json # Importing the json library helps us to read and convert tasks.json file into Python data structures
