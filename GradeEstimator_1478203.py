@@ -1,91 +1,136 @@
-# # #---------WEEK 7----------
-# Import pandas library to work with CSV data
-import pandas as pd
+# # # #---------WEEK 8----------# # #
+import json # Import json library to read .json files
+import csv # Import csv library to read grades from CSV files
 
-# Import json library to read from JSON file
-import json
+with open("tasks.json", "r") as task_file: # Open the tasks.json file in read mode
+    tasks = json.load(task_file) # Load the JSON data and convert to dictionary
 
-# ---------------------------
-# STEP 1: Read Maximum Points from tasks.json
-# ---------------------------
+### READ GRADES FROM CSV FILE AND CONVERT IT INTO LIST
+file_choice = input("Enter file name (grades_0.csv or grades_50.csv): ") # ask user which grades file to use
+with open(file_choice, "r") as grades_file: # Open and read the chosen csv file
+    csv_reader = csv.reader(grades_file) # Create CSV reader object
+    grades_data = list(csv_reader) # Convert CSV into a list
 
-with open("tasks.json", "r") as file:
-    config_data = json.load(file)
+### CALCULATE TOTAL AND MAXIMUM SCORE
+total_points = 0 # Assign a variable to store points
+max_points = 0 # Assign a variable to store maximum possible points
 
-# Create dictionary to store max points for each assignment type
-max_points_dict = {}
+for row in grades_data: # Loop through grades_data file
+    task_name = row[0] # First column contains task name
+    grade = int(row[1]) # Second column contains grades
+    total_points += grade #Add each grade to total points
+    if task_name in tasks:  # Look up task max points in tasks.json
+        max_points += tasks[task_name]["max_points"] # Add maximum points from JSON file
 
-for assignment in config_data["assignment_types"]:
-    # Normalize name: lowercase + replace spaces with underscore
-    normalized_name = assignment["name"].lower().replace(" ", "_")
-    max_points_dict[normalized_name] = assignment["max_points_per_submission"]
+### DISPLAY CURRENT SCORE
+print("You have", total_points, "out of", max_points) # Print total earned score and maximum possible score
 
-print("Maximum points per submission by type:")
-print(max_points_dict)
+### CALCULATE PERCENTAGE
+percentage = (total_points / max_points) * 100 # Calculate percentage grade
+print("Your percentage is", round(percentage)) # Print rounded percentage
 
-# ---------------------------
-# STEP 2: Read grades.csv Using Pandas
-# ---------------------------
+### DETERMINE LETTER GRADE
+if percentage > 90: # if percentage is greater than 90
+    letter_grade = "A"
+elif percentage > 80: # if percentage is greater than 80
+    letter_grade = "B"
+elif percentage > 70: # if percentage is greater than 70
+    letter_grade = "C"
+elif percentage > 60: # if percentage is greater than 60
+    letter_grade = "D"
+else:
+    letter_grade = "F"# Otherwise grade is F
 
-df = pd.read_csv("grades.csv")
+### DISPLAY LETTER GRADE
+print("Your letter grade is:", letter_grade) # Print the calculated letter grade
 
-print("\n----- ORIGINAL DATA -----")
-print(df)
-
-# ---------------------------
-# STEP 3: Display All Discussion Grades
-# ---------------------------
-
-print("\n----- DISCUSSION GRADES ONLY -----")
-
-discussion_grades = df[df["type"].str.lower() == "discussion"]
-
-print(discussion_grades)
+# # # #---------WEEK 7----------
+# # Import pandas library to work with CSV data
+# import pandas as pd
+#
+# # Import json library to read from JSON file
+# import json
+#
+# # ---------------------------
+# # STEP 1: Read Maximum Points from tasks.json
+# # ---------------------------
+#
+# with open("tasks.json", "r") as file:
+#     config_data = json.load(file)
+#
+# # Create dictionary to store max points for each assignment type
+# max_points_dict = {}
+#
+# for assignment in config_data["assignment_types"]:
+#     # Normalize name: lowercase + replace spaces with underscore
+#     normalized_name = assignment["name"].lower().replace(" ", "_")
+#     max_points_dict[normalized_name] = assignment["max_points_per_submission"]
+#
+# print("Maximum points per submission by type:")
+# print(max_points_dict)
+#
+# # ---------------------------
+# # STEP 2: Read grades.csv Using Pandas
+# # ---------------------------
+#
+# df = pd.read_csv("grades.csv")
+#
+# print("\n----- ORIGINAL DATA -----")
+# print(df)
+#
+# # ---------------------------
+# # STEP 3: Display All Discussion Grades
+# # ---------------------------
+#
+# print("\n----- DISCUSSION GRADES ONLY -----")
+#
+# discussion_grades = df[df["type"].str.lower() == "discussion"]
+#
+# print(discussion_grades)
 
 # ---------------------------
 # STEP 4: Display Unit 1 Grades for All Types
 # ---------------------------
 
-print("\n----- UNIT 1 GRADES (ALL TYPES) -----")
-
-unit1_grades = df[["type", "week1"]]
-
-print(unit1_grades)
-
-# ---------------------------
-# STEP 5: Clean Data
-# ---------------------------
-
-print("\n----- CLEANING DATA -----")
-
-for index, row in df.iterrows():
-
-    # Normalize CSV type
-    assignment_type = row["type"].lower().replace(" ", "_")
-
-    # Get correct max grade
-    max_grade = max_points_dict.get(assignment_type)
-
-    # Only clean if type exists in JSON
-    if max_grade is not None:
-
-        for column in df.columns[1:]:
-
-            value = row[column]
-
-            if pd.notna(value):
-
-                # If grade less than 0 then set it as 0
-                if value < 0:
-                    df.at[index, column] = 0
-
-                # If grade greater than max then set to max grade
-                elif value > max_grade:
-                    df.at[index, column] = max_grade
-
-print("\n----- CLEANED DATA -----")
-print(df)
-
+# print("\n----- UNIT 1 GRADES (ALL TYPES) -----")
+#
+# unit1_grades = df[["type", "week1"]]
+#
+# print(unit1_grades)
+#
+# # ---------------------------
+# # STEP 5: Clean Data
+# # ---------------------------
+#
+# print("\n----- CLEANING DATA -----")
+#
+# for index, row in df.iterrows():
+#
+#     # Normalize CSV type
+#     assignment_type = row["type"].lower().replace(" ", "_")
+#
+#     # Get correct max grade
+#     max_grade = max_points_dict.get(assignment_type)
+#
+#     # Only clean if type exists in JSON
+#     if max_grade is not None:
+#
+#         for column in df.columns[1:]:
+#
+#             value = row[column]
+#
+#             if pd.notna(value):
+#
+#                 # If grade less than 0 then set it as 0
+#                 if value < 0:
+#                     df.at[index, column] = 0
+#
+#                 # If grade greater than max then set to max grade
+#                 elif value > max_grade:
+#                     df.at[index, column] = max_grade
+#
+# print("\n----- CLEANED DATA -----")
+# print(df)
 
 
 # # #---------WEEK 6----------
